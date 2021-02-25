@@ -1,8 +1,8 @@
 Building configuration...
 
-Current configuration : 4206 bytes
+Current configuration : 5444 bytes
 !
-! Last configuration change at 11:34:48 UTC Thu Feb 25 2021 by cisco
+! Last configuration change at 13:26:18 UTC Thu Feb 25 2021 by developer
 !
 version 16.9
 service timestamps debug datetime msec
@@ -16,6 +16,46 @@ hostname csr1000v-1
 boot-start-marker
 boot-end-marker
 !
+!
+vrf definition blue
+ description Blue VRF
+ rd 1:410
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition dexton
+ description dexton VRF
+ rd 1:35
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition green
+ description Green VRF
+ rd 1:420
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition red
+ description Red VRF
+ rd 1:400
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
 !
 no logging console
 enable secret 5 $1$20ue$uC.uSGo6nvfWs63EjjzRP.
@@ -135,6 +175,30 @@ redundancy
 ! 
 !
 !
+interface Loopback111
+ description Pod Number 111
+ ip address 10.111.111.1 255.255.255.255
+!
+interface Loopback1135
+ description Pod Number 1135
+ vrf forwarding red
+ ip address 10.35.11.125 255.255.255.255
+!
+interface Loopback1235
+ description Pod Number 1235
+ vrf forwarding blue
+ ip address 10.35.12.125 255.255.255.255
+!
+interface Loopback1335
+ description Pod Number 1335
+ vrf forwarding green
+ ip address 10.35.13.125 255.255.255.255
+!
+interface Loopback1435
+ description Pod Number 1435
+ vrf forwarding dexton
+ ip address 10.35.14.125 255.255.255.255
+!
 interface GigabitEthernet1
  description MANAGEMENT INTERFACE - DON'T TOUCH ME
  ip address 10.10.20.48 255.255.255.0
@@ -195,6 +259,10 @@ line vty 0 4
  login local
  transport input ssh
 !
+ntp server 10.11.111.65
+ntp server 10.12.111.65
+ntp server 10.13.111.65
+ntp server 10.14.111.65
 !
 !
 !
